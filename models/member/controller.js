@@ -141,8 +141,17 @@ class MemberController {
       return next(err);
     }
 
-    await emailService.sendVerifyMail(member);
-    res.json({ message: 'Sign Up successful Verify Your Email' });
+    try {
+      await emailService.sendVerifyMail(member);
+      return res.json({ message: 'Sign Up successful Verify Your Email' });
+    } catch (err) {
+      log.error(err);
+      return res.json({
+        message: 'Sign Up successful but verification email could not be sent right now',
+        emailSent: false,
+        memberId: member.id
+      });
+    }
   }
 
   async signInWithApple(req, res, next) {
@@ -267,8 +276,15 @@ class MemberController {
       error.statusCode = 403;
       return next(error);
     }
-    await emailService.sendVerifyMail(member);
-    res.json({ message: 'Email successfully send, please check your Mail' });
+    try {
+      await emailService.sendVerifyMail(member);
+      return res.json({ message: 'Email successfully send, please check your Mail' });
+    } catch (err) {
+      log.error(err);
+      const error = new Error('Member found but verification email could not be sent right now');
+      error.statusCode = 503;
+      return next(error);
+    }
   }
 
   // Show Profile
@@ -319,7 +335,7 @@ class MemberController {
     }
     if (sendEmail) {
       message = 'Profile Updated Please Verify Your Email';
-      emailService.sendVerifyMail(member);
+      emailService.sendVerifyMail(member).catch(err => log.error(err));
     }
     res.json({ message });
   }
