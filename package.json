@@ -39,7 +39,7 @@
     "moment": "^2.24.0",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
-    "mysql2": "^1.6.5",
+    "mysql2": "^3.11.3",
     "nodemailer": "^6.1.1",
     "nyc": "^14.0.0",
     "oauth2-server": "^3.0.1",

@@ -45,7 +45,7 @@ const generateDIRTree = () =>
 
 app.use(cors());
 // Swagger Custom authentication
-let logLevel = null;
+let logLevel = null
 
 /* istanbul ignore else */
 if (config.get('isTesting')) {
