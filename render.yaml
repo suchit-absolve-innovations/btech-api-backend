@@ -1,0 +1,39 @@
+services:
+  - type: web
+    name: btechnologies-backend
+    runtime: node
+    plan: free
+    buildCommand: npm install
+    startCommand: node index.js
+    healthCheckPath: /
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_HOST
+        sync: false
+      - key: DB_PORT
+        value: "3306"
+      - key: DB_NAME
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_CONNECT_TIMEOUT
+        value: "60000"
+      - key: DB_SSL
+        value: "false"
+      - key: DB_SSL_REJECT_UNAUTHORIZED
+        value: "false"
+      - key: API_URL
+        sync: false
+      - key: SMTP_HOST
+        sync: false
+      - key: SMTP_PORT
+        sync: false
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASS
+        sync: false
+      - key: SMTP_SENDER_EMAIL
+        sync: false

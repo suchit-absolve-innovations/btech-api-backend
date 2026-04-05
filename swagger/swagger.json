@@ -1,0 +1,3243 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "B-Technologies rest API documentation.",
+    "title": "B-Technologies API Documentation"
+  },
+  "host": "",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Member",
+      "description": "Everything about Members"
+    },
+    {
+      "name": "Categories",
+      "description": "Everything about Categories"
+    },
+    {
+      "name": "Products",
+      "description": "Everything about Products"
+    }
+  ],
+  "paths": {
+    "/oAuth/Login": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Login Member Account",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "formData",
+            "description": "grant_type",
+            "required": true,
+            "type": "string",
+            "enum": ["password", "fb_auth", "google_auth"]
+          },
+          {
+            "name": "token",
+            "in": "formData",
+            "description": "Email/username or fb/google token Of The Member",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Password Of The Member",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "deviceType",
+            "in": "formData",
+            "description": "Device Type",
+            "type": "string",
+            "required": true,
+            "enum": ["android", "web", "ios"]
+          },
+          {
+            "name": "deviceToken",
+            "in": "formData",
+            "description": "Device Token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Data IS Invalid"
+          },
+          "204": {
+            "description": "No Member Found"
+          },
+          "401": {
+            "description": "Email or password is incorrect"
+          },
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/oAuth/RefreshToken": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Get refresh token of the member",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "grant_type",
+            "in": "formData",
+            "description": "grant_type",
+            "required": true,
+            "type": "string",
+            "enum": ["refresh_token"]
+          },
+          {
+            "name": "refresh_token",
+            "in": "formData",
+            "description": "refresh token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "deviceType",
+            "in": "formData",
+            "description": "device type",
+            "type": "string",
+            "required": true,
+            "enum": ["android", "web", "ios"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Data IS Invalid"
+          },
+          "404": {
+            "description": "Endpoint not Found"
+          },
+          "204": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "successful"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Member": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Sign UP Member Account",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Valid Email of the Member",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "formData",
+            "description": "first name of the Member",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "description": "last name of the Member",
+            "type": "string"
+          },
+          {
+            "name": "password",
+            "in": "formData",
+            "description": "Password min 8 digit max 32",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "contactNumber",
+            "in": "formData",
+            "description": "contactNumber with country code",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "formData",
+            "description": "Role of the member",
+            "required": true,
+            "type": "string",
+            "enum": ["buyer", "seller"]
+          },
+          {
+            "name": "username",
+            "in": "formData",
+            "description": "username Token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get Own Profile",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Member"],
+        "summary": "Update Member Account",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "Valid Email of the Member",
+            "type": "string"
+          },
+          {
+            "name": "firstName",
+            "in": "formData",
+            "description": "first name of the Member",
+            "type": "string"
+          },
+          {
+            "name": "lastName",
+            "in": "formData",
+            "description": "last name of the Member",
+            "type": "string"
+          },
+          {
+            "name": "contactNumber",
+            "in": "formData",
+            "description": "contactNumber with country code",
+            "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "formData",
+            "description": "username Token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Login successful"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Member"],
+        "summary": "Logout Member Account",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Successfully Logout"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Member/ChangePassword": {
+      "put": {
+        "tags": ["Member"],
+        "summary": "Change Password",
+        "produces": ["application/xml,application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "oldPassword",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "newPassword",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password Changed"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Password Did Not Match"
+          }
+        }
+      }
+    },
+    "/Member/ForgotPassword": {
+      "put": {
+        "tags": ["Member"],
+        "summary": "Send Forgot Password Email",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/xml,application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "email",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Reset password link send please check your email"
+          },
+          "404": {
+            "description": "Wrong Email"
+          }
+        }
+      }
+    },
+    "/Member/ResetPassword": {
+      "put": {
+        "tags": ["Member"],
+        "summary": "Reset Password",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/xml,application/json"],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "formData",
+            "name": "password",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Password Reset!"
+          },
+          "401": {
+            "description": "Wrong Email"
+          }
+        }
+      }
+    },
+    "/Member/CountryCode": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "get all country codes",
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/xml,application/json"],
+        "responses": {
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/Member/VerifyEmail": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Verify Email",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "formData",
+            "description": "token of the user",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "formData",
+            "description": "id of the member",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Data IS Invalid"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "200": {
+            "description": "successful"
+          }
+        }
+      }
+    },
+    "/Member/ResendVerifyEmail": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Re-Send Verify Email",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "formData",
+            "description": "email of the member",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Data IS Invalid"
+          },
+          "404": {
+            "description": "Not Found Email already verified"
+          },
+          "403": {
+            "description": "Email already verified"
+          },
+          "204": {
+            "description": "No Member Found"
+          },
+          "200": {
+            "description": "Email successfully send, please check your Mail"
+          }
+        }
+      }
+    },
+    "/Member/Banner/": {
+      "post": {
+        "tags": ["Banner"],
+        "summary": "Add Banner",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "banner",
+            "in": "formData",
+            "description": "file/jpg,hpeg,png",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "banner type",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "formData",
+            "description": "banner category",
+            "type": "string"
+          },
+          {
+            "name": "productId",
+            "in": "formData",
+            "description": "banner product",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "banner name",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Found"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Banner"],
+        "summary": "Get All Banner",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Member/Banner/{bannerId}": {
+      "get": {
+        "tags": ["Banner"],
+        "summary": "Get Banner by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "bannerId",
+            "in": "path",
+            "description": "id of the Banner",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Banner"],
+        "summary": "Delete Banner by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "bannerId",
+            "in": "path",
+            "description": "id of the Banner",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/Stats": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get stats",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/All": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get all members",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          },
+          {
+            "name": "role",
+            "in": "query",
+            "description": "roles",
+            "type": "string",
+            "enum": ["seller", "buyer", "admin"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/Seller": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get all seller (Unused)",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/DisableOrEnable": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "enable or disable member",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "action",
+            "in": "formData",
+            "description": "enable or disable",
+            "type": "string",
+            "enum": ["enable", "disable"]
+          },
+          {
+            "name": "memberId",
+            "in": "formData",
+            "description": "id of the member",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/States/{countryId}": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get States by country id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "countryId",
+            "in": "path",
+            "description": "id of the Country",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/Search": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Search Member By Name",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "name",
+            "in": "query",
+            "description": "name of the member",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/SellerInfo": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "add seller info",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "doc",
+            "in": "formData",
+            "description": "only pdf are allowed",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "companyName",
+            "in": "formData",
+            "description": "name of the company",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "companyRegId",
+            "in": "formData",
+            "description": "reg id of the company",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "address of the company",
+            "type": "string"
+          },
+          {
+            "name": "companyCity",
+            "in": "formData",
+            "description": "city of the company",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "abnNumber",
+            "in": "formData",
+            "description": "abn number",
+            "type": "string"
+          },
+          {
+            "name": "businessEmail",
+            "in": "formData",
+            "description": "businessEmail of the company",
+            "type": "string"
+          },
+          {
+            "name": "drivingLicence",
+            "in": "formData",
+            "description": "driving Licence contactNumber",
+            "type": "string"
+          },
+          {
+            "name": "contactNumber",
+            "in": "formData",
+            "description": "contactNumber",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Member"],
+        "summary": "update seller info",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "doc",
+            "in": "formData",
+            "description": "only pdf are allowed",
+            "type": "file"
+          },
+          {
+            "name": "companyName",
+            "in": "formData",
+            "description": "name of the company",
+            "type": "string"
+          },
+          {
+            "name": "companyRegId",
+            "in": "formData",
+            "description": "reg id of the company",
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "address of the company",
+            "type": "string"
+          },
+          {
+            "name": "companyCity",
+            "in": "formData",
+            "description": "city of the company",
+            "type": "string"
+          },
+          {
+            "name": "abnNumber",
+            "in": "formData",
+            "description": "abn number",
+            "type": "string"
+          },
+          {
+            "name": "businessEmail",
+            "in": "formData",
+            "description": "businessEmail of the company",
+            "type": "string"
+          },
+          {
+            "name": "drivingLicence",
+            "in": "formData",
+            "description": "driving Licence contactNumber",
+            "type": "string"
+          },
+          {
+            "name": "contactNumber",
+            "in": "formData",
+            "description": "contactNumber",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/Admin/SellerInfo/{sellerId}": {
+      "put": {
+        "tags": ["Member"],
+        "summary": "update seller info",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "sellerId",
+            "in": "path",
+            "description": "id of the seller",
+            "type": "string"
+          },
+          {
+            "name": "isApproved",
+            "in": "formData",
+            "description": "true to enable and false to disable",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/SellerStats": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get all seller stats",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/SignInWithApple": {
+      "post": {
+        "tags": ["Member"],
+        "summary": "Get all seller stats",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "formData",
+            "description": "apple token",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "deviceType",
+            "in": "formData",
+            "description": "device token",
+            "type": "string"
+          },
+          {
+            "name": "deviceToken",
+            "in": "formData",
+            "description": "device token",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Member/DeviceToken": {
+      "get": {
+        "tags": ["Member"],
+        "summary": "Get device token",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "skip",
+            "in": "query",
+            "description": "offset",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Category/": {
+      "post": {
+        "tags": ["Categories"],
+        "summary": "Add Category",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the category",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "category type like Electronics/furniture",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "isNavigation",
+            "in": "formData",
+            "description": "isNavigation",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Found"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get All Categories",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Category/{categoryId}": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get Category by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "id of the category",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Categories"],
+        "summary": "Update Category",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "id of the category",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the category",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "category type like Electronics/furniture",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "isNavigation",
+            "in": "formData",
+            "description": "isNavigation",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Categories"],
+        "summary": "delete category",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "id of the category",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Category/Image/{categoryId}/": {
+      "post": {
+        "tags": ["Categories"],
+        "summary": "Add Category Image",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "file/jpg,jpeg,png array of file max 10",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "Category id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Find Found"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get All Category image",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "Category  id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "isFeatured",
+            "in": "formData",
+            "description": "true or false",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Category/Logo/{categoryId}/": {
+      "post": {
+        "tags": ["Categories"],
+        "summary": "Add Category Logo",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "logo",
+            "in": "formData",
+            "description": "file/jpg,jpeg,png array of file max 10",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "Category id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Find Found"
+          }
+        }
+      }
+    },
+    "/Category/Image/getById/{imageId}": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get Category image by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Category Image",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Categories"],
+        "summary": "delete Category image by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the Category Image",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Category/Featured/Category": {
+      "get": {
+        "tags": ["Categories"],
+        "summary": "Get Featured Categories",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Product/": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Add Product",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "name of the product additionalDescription",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "additionalDescription",
+            "in": "formData",
+            "description": "the product additionalDescription",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "formData",
+            "description": "category id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "sellerId",
+            "in": "formData",
+            "description": "seller id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "product price",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "salePrice",
+            "in": "formData",
+            "description": "product salePrice",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "discount",
+            "in": "formData",
+            "description": "product discount",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "in": "formData",
+            "description": "other all info about product in json format",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Found"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get All Product",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Product/{productId}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Product by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "put": {
+        "tags": ["Products"],
+        "summary": "Update Product",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "additionalDescription",
+            "in": "formData",
+            "description": "the product additionalDescription",
+            "type": "string"
+          },
+          {
+            "name": "title",
+            "in": "formData",
+            "description": "name of the product",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "formData",
+            "description": "category id",
+            "type": "string"
+          },
+          {
+            "name": "salePrice",
+            "in": "formData",
+            "description": "product salePrice in float",
+            "type": "string"
+          },
+          {
+            "name": "price",
+            "in": "formData",
+            "description": "product price in float",
+            "type": "string"
+          },
+          {
+            "name": "discount",
+            "in": "formData",
+            "description": "product discount",
+            "type": "string"
+          },
+          {
+            "name": "info",
+            "in": "formData",
+            "description": "other all info about product in json format",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Category Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "delete Product",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "id of the Product",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Successfully deleted"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Product/Own/Products": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Products",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Product/Image/{productId}/": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Add Product Image",
+        "produces": ["application/json"],
+        "consumes": ["multipart/form-data"],
+        "parameters": [
+          {
+            "name": "image",
+            "in": "formData",
+            "description": "file/jpg,jpeg,png array of file max 10",
+            "required": true,
+            "type": "file"
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product  id",
+            "type": "string"
+          },
+          {
+            "name": "isFeatured",
+            "in": "formData",
+            "description": "true or false",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          },
+          "204": {
+            "description": "No Product Find Found"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get All Product image",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "Product id",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Product/Image/getById/{imageId}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Product image by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product Image",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Products"],
+        "summary": "Delete Product image by Id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "id of the product Image",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Product/LikeOrDislike": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "Product like",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "query",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Product/Featured/Product": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get Featured Products",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "204": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/Product/Category/{categoryId}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Get All Product by category id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "path",
+            "description": "id of the category",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Product/Search/{title}": {
+      "get": {
+        "tags": ["Products"],
+        "summary": "Search All Product by title",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "title",
+            "in": "path",
+            "description": "search term",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Product/Cart/ByIds": {
+      "post": {
+        "tags": ["Products"],
+        "summary": "get Products by product ids",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "productIds",
+            "in": "formData",
+            "description": "array of product ids",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Address": {
+      "post": {
+        "tags": ["Address"],
+        "summary": "Add Product, only a buyer can address",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the owner of the address",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "countryId",
+            "in": "formData",
+            "description": "country id",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "pinCode",
+            "in": "formData",
+            "description": "pin code",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "complete address",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "formData",
+            "description": "city",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "in": "formData",
+            "description": "state",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "landmark",
+            "in": "formData",
+            "description": "landmark",
+            "type": "string"
+          },
+          {
+            "name": "number",
+            "in": "formData",
+            "required": true,
+            "description": "contact number",
+            "type": "string"
+          },
+          {
+            "name": "alternateNumber",
+            "in": "formData",
+            "description": "alternate contact number",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "make address enable and disable",
+            "required": true,
+            "type": "boolean"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "make address enable and disable",
+            "required": true,
+            "type": "string",
+            "enum": ["HOME", "WORK", "OTHER"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "address added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Address"],
+        "summary": "Get All own Address",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Address/{addressId}": {
+      "put": {
+        "tags": ["Address"],
+        "summary": "update own address",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "formData",
+            "description": "Address id",
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the owner of the address",
+            "type": "string"
+          },
+          {
+            "name": "countryId",
+            "in": "formData",
+            "description": "country id",
+            "type": "string"
+          },
+          {
+            "name": "pinCode",
+            "in": "formData",
+            "description": "pin code",
+            "type": "string"
+          },
+          {
+            "name": "address",
+            "in": "formData",
+            "description": "complete address",
+            "type": "string"
+          },
+          {
+            "name": "city",
+            "in": "formData",
+            "description": "city",
+            "type": "string"
+          },
+          {
+            "name": "state",
+            "in": "formData",
+            "description": "state",
+            "type": "string"
+          },
+          {
+            "name": "landmark",
+            "in": "formData",
+            "description": "landmark",
+            "type": "string"
+          },
+          {
+            "name": "number",
+            "in": "formData",
+            "description": "contact number",
+            "type": "string"
+          },
+          {
+            "name": "alternateNumber",
+            "in": "formData",
+            "description": "alternate contact number",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "formData",
+            "description": "make address enable and disable",
+            "type": "boolean"
+          },
+          {
+            "name": "type",
+            "in": "formData",
+            "description": "make address enable and disable",
+            "type": "string",
+            "enum": ["HOME", "WORK", "OTHER"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "address added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Address"],
+        "summary": "Get address by id own Address",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "formData",
+            "description": "Address id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Address"],
+        "summary": "delete address by id own Address",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "formData",
+            "description": "Address id",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Cart": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Add Product in cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["buyer"]
+          },
+          {
+            "name": "productId",
+            "in": "formData",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "quantity",
+            "in": "formData",
+            "description": "product quantity number",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Get all the products from the cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["buyer"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "empty whole cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Cart/{productId}": {
+      "put": {
+        "tags": ["Cart"],
+        "summary": "update Product quantity in cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["buyer"]
+          },
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "quantity",
+            "in": "formData",
+            "description": "product quantity number",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Cart"],
+        "summary": "delete product from cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "productId",
+            "in": "path",
+            "description": "id of the product",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Cart/Offline": {
+      "post": {
+        "tags": ["Cart"],
+        "summary": "Add array of Products in cart offline way",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "products",
+            "in": "formData",
+            "description": "array of products with productId and quantity",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Cart/CartTotalCount": {
+      "get": {
+        "tags": ["Cart"],
+        "summary": "Get cart count",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Order": {
+      "post": {
+        "tags": ["Order"],
+        "summary": "Add Order from his cart",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "addressId",
+            "in": "formData",
+            "description": "address id of the member",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "couponCode",
+            "in": "formData",
+            "description": "coupon code",
+
+            "type": "string"
+          },
+          {
+            "name": "paymentType",
+            "in": "formData",
+            "description": "like cod or online payement",
+            "required": true,
+            "type": "string",
+            "enum": ["COD", "ONLINE"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "order added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get all the order",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Order/Admin/All": {
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get all the order this is only for seller and admin",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "header",
+            "description": "admin/seller/buyer",
+            "required": true,
+            "type": "string",
+            "enum": ["admin", "seller", "buyer"]
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          },
+          {
+            "name": "categoryId",
+            "in": "query",
+            "description": "categoryId",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "order status",
+            "type": "string",
+            "enum": ["ACCEPTED", "DELIVERED", "SHIPPED", "PENDING", "CANCELLED", "RETURN"]
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "startDate in iso format",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "end date in iso format",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Order/{orderId}": {
+      "put": {
+        "tags": ["Order"],
+        "summary": "update Order status",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "id of the order",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "order status",
+            "required": true,
+            "type": "string",
+            "enum": ["ACCEPTED", "DELIVERED", "SHIPPED", "PENDING", "CANCELLED", "RETURN"]
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Order"],
+        "summary": "Get order by id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "id of the order",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "order"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Transaction/": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "get all his own transaction",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "Profile"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Transaction/Initiate/{orderId}": {
+      "post": {
+        "tags": ["Transaction"],
+        "summary": "add Transaction",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "orderId",
+            "in": "path",
+            "description": "id of the order",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Transaction/Validate": {
+      "post": {
+        "tags": ["Transaction"],
+        "summary": "add Transaction",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "event",
+            "in": "formData",
+            "description": "event data of stripe",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "product added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Transaction/Admin": {
+      "get": {
+        "tags": ["Transaction"],
+        "summary": "Get all the Transaction this is only for and admin",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "skip/offset",
+            "type": "string"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "limit",
+            "type": "string"
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "status",
+            "type": "string",
+            "enum": ["PAID", "FAILED", "REFUND"]
+          },
+          {
+            "name": "startDate",
+            "in": "query",
+            "description": "start date",
+            "type": "string"
+          },
+          {
+            "name": "endDate",
+            "in": "query",
+            "description": "end date",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Coupon": {
+      "get": {
+        "tags": ["Coupon"],
+        "summary": "Get all the Coupons",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Coupon"],
+        "summary": "add Coupon",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the coupon",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "formData",
+            "description": "code of the coupon",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "maxAmount",
+            "in": "formData",
+            "description": "maxAmount of the coupon in float",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "percentage",
+            "in": "formData",
+            "description": "percentage of the coupon in float",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "coupon added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Coupon/{couponId}": {
+      "put": {
+        "tags": ["Coupon"],
+        "summary": "update Coupon",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "couponId",
+            "in": "path",
+            "description": "id of the coupon",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "name",
+            "in": "formData",
+            "description": "name of the coupon",
+            "type": "string"
+          },
+          {
+            "name": "code",
+            "in": "formData",
+            "description": "code of the coupon",
+            "type": "string"
+          },
+          {
+            "name": "maxAmount",
+            "in": "formData",
+            "description": "amount of the coupon in float",
+            "type": "string"
+          },
+          {
+            "name": "percentage",
+            "in": "formData",
+            "description": "percentage of the coupon in number",
+            "type": "string"
+          },
+          {
+            "name": "isDisabled",
+            "in": "formData",
+            "description": "disable/enable",
+            "type": "boolean"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "coupon updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "delete": {
+        "tags": ["Coupon"],
+        "summary": "delete Coupon",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "couponId",
+            "in": "path",
+            "required": true,
+            "description": "id of the coupon",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "coupon deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      },
+      "get": {
+        "tags": ["Coupon"],
+        "summary": "Get Coupon by id",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "couponId",
+            "in": "path",
+            "required": true,
+            "description": "id of the coupon",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/Coupon/Category/Mapping": {
+      "get": {
+        "tags": ["Coupon"],
+        "summary": "Get all the Coupons category mapping",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "cart"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": ["Coupon"],
+        "summary": "add Coupon category mapping",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "categoryId",
+            "in": "formData",
+            "description": "id of the categoryId",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "couponId",
+            "in": "formData",
+            "description": "id of the coupon",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "validFrom",
+            "in": "formData",
+            "description": "date from when coupon is valid",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "validTill",
+            "in": "formData",
+            "description": "date till coupon is valid",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "minCartValue",
+            "in": "formData",
+            "description": "amount of the coupon in float",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "coupon added successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    },
+    "/Coupon/Category/Mapping/{mappingId}": {
+      "put": {
+        "tags": ["Coupon"],
+        "summary": "update Coupon category mapping",
+        "produces": ["application/json"],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "parameters": [
+          {
+            "name": "mappingId",
+            "in": "path",
+            "description": "id of the mapping",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "validFrom",
+            "in": "formData",
+            "description": "date from when coupon is valid",
+            "type": "string"
+          },
+          {
+            "name": "validTill",
+            "in": "formData",
+            "description": "date till coupon is valid",
+            "type": "string"
+          },
+          {
+            "name": "minCartValue",
+            "in": "formData",
+            "description": "amount of the coupon in float",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request"
+          },
+          "200": {
+            "description": "coupon updated successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "422": {
+            "description": "wrong data"
+          }
+        }
+      }
+    }
+  }
+}
