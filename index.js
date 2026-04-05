@@ -14,8 +14,14 @@ const morgan = require('morgan');
 const config = require('config');
 const serverUtils = require('./utils/serverUtils');
 const PORT = process.env.PORT || config.get('port');
+const isRender = `${process.env.RENDER}`.toLowerCase() === 'true';
+const requireDbOnStartup = `${process.env.REQUIRE_DB_ON_STARTUP || true}`.toLowerCase() === 'true';
+const shouldRequireBootBeforeListen = requireDbOnStartup && !isRender;
+const shouldUseCluster = !config.get('isTesting') && !isRender;
 global.app = express();
 global.Op = Sequelize.Op;
+global.dbReady = false;
+global.dbBootError = null;
 
 const generateDIRTree = () =>
   new Promise(async (resolve, reject) => {
@@ -82,6 +88,34 @@ const db = config.get('db');
 global.sequelize = new Sequelize(db.database, null, null, db.setting);
 const routes = require('./routes');
 
+const getWorkerCount = () => {
+  const configuredConcurrency = Number(process.env.WEB_CONCURRENCY);
+
+  if (Number.isInteger(configuredConcurrency) && configuredConcurrency > 0) {
+    return configuredConcurrency;
+  }
+
+  if (isRender) {
+    return 1;
+  }
+
+  return require('os').cpus().length;
+};
+
+const runBoot = async () => {
+  try {
+    await serverUtils.boot(app);
+    global.dbReady = true;
+    global.dbBootError = null;
+    log.info('Startup boot completed successfully');
+  } catch (err) {
+    global.dbReady = false;
+    global.dbBootError = err;
+    log.error(err, 'Startup boot failed');
+    throw err;
+  }
+};
+
 // server up
 const startApp = async () => {
   fs.access('./static', async error => {
@@ -122,21 +156,22 @@ const startApp = async () => {
   app.use('/static/sellerDocs', express.static(path.join(__dirname, 'static/sellerDocs')));
   // Asset Links
   app.listen(PORT, () => {
-    console.log(`Welcome To B-Technologies ${config.get('port')}`);
+    console.log(`Welcome To B-Technologies ${PORT}`);
+    log.info({ port: PORT, dbReady: global.dbReady, requireDbOnStartup }, 'HTTP server listening');
   });
 };
 
 if (config.get('isTesting')) {
   startApp();
-} else if (cluster.isMaster && process.env.NODE_ENV !== 'default') {
+} else if (shouldUseCluster && cluster.isMaster && process.env.NODE_ENV !== 'default') {
   require('./routes');
 
   log.info('Starting index.js - starting master');
 
-  serverUtils.boot(app).then(
+  runBoot().then(
     () => {
       log.info('Starting index.js - Trying to get cpu count');
-      let _cpus = require('os').cpus().length;
+      let _cpus = getWorkerCount();
 
       if (process.env.NODE_ENV === 'default') _cpus = 1;
 
@@ -159,15 +194,25 @@ if (config.get('isTesting')) {
     cluster.fork();
   });
 } else {
-  serverUtils.boot(app).then(
-    () => {
-      console.log('Starting index.js - starting app from last else');
-      startApp();
-    },
-    err => {
-      console.error(err);
-    }
-  );
+  const bootPromise = runBoot();
+
+  if (shouldRequireBootBeforeListen) {
+    bootPromise.then(
+      () => {
+        console.log('Starting index.js - starting app from last else');
+        startApp();
+      },
+      err => {
+        console.error(err);
+      }
+    );
+  } else {
+    console.log('Starting index.js - starting app before DB boot completes');
+    startApp();
+    bootPromise.catch(err => {
+      log.error(err, 'Continuing to serve health checks while database is unavailable');
+    });
+  }
 }
 
 module.exports = app;

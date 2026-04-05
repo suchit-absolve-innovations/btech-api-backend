@@ -23,6 +23,20 @@ router.route('/').get((req, res) => {
   res.json({ message: 'WELCOME TO B-Technologies!' });
 });
 
+router.route('/health').get((req, res) => {
+  const response = {
+    status: global.dbReady ? 'ok' : 'degraded',
+    dbReady: Boolean(global.dbReady),
+    hasDbBootError: Boolean(global.dbBootError)
+  };
+
+  if (global.dbReady) {
+    return res.status(200).json(response);
+  }
+
+  return res.status(200).json(response);
+});
+
 router.use(`/${version}/Member`, member);
 router.use(`/${version}/oAuth`, accessToken);
 router.use(`/${version}/Category`, category);

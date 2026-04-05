@@ -5,10 +5,16 @@ services:
     plan: free
     buildCommand: npm install
     startCommand: node index.js
-    healthCheckPath: /
+    healthCheckPath: /health
     envVars:
       - key: NODE_ENV
         value: production
+      - key: RENDER
+        value: "true"
+      - key: REQUIRE_DB_ON_STARTUP
+        value: "false"
+      - key: WEB_CONCURRENCY
+        value: "1"
       - key: DB_HOST
         sync: false
       - key: DB_PORT

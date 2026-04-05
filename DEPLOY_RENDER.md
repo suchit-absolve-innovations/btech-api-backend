@@ -12,17 +12,27 @@ The app can create its schema with Sequelize during startup:
 - `boot/01_seeddb.js` runs seeds
 - `boot/02_default_admin.js` creates default admins
 
+For Render specifically, this repo now supports a safer startup mode:
+
+- The HTTP server binds to `PORT` immediately
+- `GET /health` responds even if the database is still unavailable
+- Database boot can continue in the background when `REQUIRE_DB_ON_STARTUP=false`
+- Clustering is disabled on Render so the process model stays simple
+
 ## Render setup
 
 Create a new Web Service from this repo and use the included `render.yaml`, or configure the same values manually:
 
 - Build command: `npm install`
 - Start command: `node index.js`
-- Health check path: `/`
+- Health check path: `/health`
 
 ## Required environment variables
 
 - `NODE_ENV=production`
+- `RENDER=true`
+- `REQUIRE_DB_ON_STARTUP=false`
+- `WEB_CONCURRENCY=1`
 - `DB_HOST`
 - `DB_PORT=3306`
 - `DB_NAME`
@@ -57,3 +67,15 @@ Use a clean MySQL database and let Sequelize create the schema automatically on 
 - `GET /swagger`
 
 If deploy logs show `connect ETIMEDOUT`, the problem is network access to the database, not npm build or app boot syntax.
+
+## If you still see `connect ETIMEDOUT`
+
+That means Render cannot reach your MySQL host yet. Check these in order:
+
+- `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD` are correct
+- Your MySQL server accepts remote connections, not only localhost
+- Firewall or cloud security group allows inbound traffic from Render
+- If this is AWS RDS, the instance is publicly reachable or connected through supported private networking
+- If SSL is required by the provider, set `DB_SSL=true`
+
+With `REQUIRE_DB_ON_STARTUP=false`, deploy should stay up, but DB-backed APIs will still fail until connectivity is fixed.
