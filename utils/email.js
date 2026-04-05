@@ -5,15 +5,35 @@ const config = require('config');
 const uid = require('uid2');
 const { EmailTemplate } = require('email-templates');
 
-const transporter = nodemailer.createTransport({
-  host: config.get('emailConfig').host,
-  port: config.get('emailConfig').port,
-  auth: {
-    user: config.get('emailConfig').user,
-    pass: config.get('emailConfig').pass
-  },
-  tls: { rejectUnauthorized: false }
-});
+const emailConfig = config.get('emailConfig');
+const isEmailConfigured = () =>
+  Boolean(emailConfig.host && emailConfig.port && emailConfig.user && emailConfig.pass && emailConfig.sender);
+
+const createTransporter = () =>
+  nodemailer.createTransport({
+    host: emailConfig.host,
+    port: emailConfig.port,
+    auth: {
+      user: emailConfig.user,
+      pass: emailConfig.pass
+    },
+    tls: { rejectUnauthorized: false }
+  });
+
+const sendMail = options =>
+  new Promise((resolve, reject) => {
+    if (!isEmailConfigured()) {
+      const error = new Error('Email service is not configured');
+      error.code = 'EMAIL_NOT_CONFIGURED';
+      return reject(error);
+    }
+
+    const transporter = createTransporter();
+    return transporter.sendMail(options, (error, response) => {
+      if (error) return reject(error);
+      return resolve(response);
+    });
+  });
 let memberFacade;
 let addressFacade;
 
@@ -24,7 +44,8 @@ module.exports = {
       member.otp = await uid(config.get('otpLength'));
       await member.save();
     } catch (error) {
-      return console(error);
+      log.error(error);
+      return;
     }
     const forgotPassword = new EmailTemplate(templateDir);
     const link = `${config.get('webLink')}/Set-Password/${member.otp}/${member.id}`;
@@ -41,12 +62,9 @@ module.exports = {
         subject: 'Forgot Password',
         html: result.html
       };
-      transporter.sendMail(mailOptions, (error, res) => {
-        if (error) {
-          return log.error(error);
-        }
-        return log.info(res);
-      });
+      sendMail(mailOptions)
+        .then(response => log.info(response))
+        .catch(error => log.error(error));
     });
   },
   changePasswordEmail: async member => {
@@ -63,12 +81,9 @@ module.exports = {
         subject: 'Change Password',
         html: result.html
       };
-      transporter.sendMail(mailOptions, (error, res) => {
-        if (error) {
-          return log.error(error);
-        }
-        return log.info(res);
-      });
+      sendMail(mailOptions)
+        .then(response => log.info(response))
+        .catch(error => log.error(error));
     });
   },
   sendVerifyMail: member =>
@@ -104,17 +119,12 @@ module.exports = {
             subject: 'Email Verification',
             html: result.html
           };
-          try {
-            transporter.sendMail(options, (error, res) => {
-              if (error) {
-                return reject(error);
-              }
-              log.info(res);
+          return sendMail(options)
+            .then(response => {
+              log.info(response);
               resolve();
-            });
-          } catch (error) {
-            return reject(error);
-          }
+            })
+            .catch(error => reject(error));
         }
       );
     }),
@@ -176,21 +186,15 @@ module.exports = {
             html: result.html
           };
           if (config.get('isTesting')) return resolve();
-          try {
-            transporter.sendMail(options, (error, res) => {
-              if (error) {
-                log.error(error);
-                return resolve();
-              }
-              log.info(res);
+          return sendMail(options)
+            .then(response => {
+              log.info(response);
               return resolve();
-            });
-          } catch (error) {
-            if (error) {
+            })
+            .catch(error => {
               log.error(error);
               return resolve();
-            }
-          }
+            });
         }
       );
     }),
@@ -202,11 +206,8 @@ module.exports = {
       subject: 'New Seller',
       html: '<b>you have a new seller account that needs verification</b>'
     };
-    transporter.sendMail(mailOptions, (error, res) => {
-      if (error) {
-        return log.error(error);
-      }
-      return log.info(res);
-    });
+    sendMail(mailOptions)
+      .then(response => log.info(response))
+      .catch(error => log.error(error));
   }
 };
