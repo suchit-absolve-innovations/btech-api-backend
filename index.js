@@ -11,6 +11,16 @@ const fs = Promise.promisifyAll(require('fs'));
 const bunyan = require('bunyan');
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const util = require('util');
+
+// Node.js 23+ removed util.isRegExp/util.isDate used by config@3.x.
+if (typeof util.isRegExp !== 'function' && util.types && typeof util.types.isRegExp === 'function') {
+  util.isRegExp = util.types.isRegExp;
+}
+if (typeof util.isDate !== 'function' && util.types && typeof util.types.isDate === 'function') {
+  util.isDate = util.types.isDate;
+}
+
 const config = require('config');
 const serverUtils = require('./utils/serverUtils');
 const PORT = process.env.PORT || config.get('port');

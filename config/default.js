@@ -16,7 +16,7 @@ module.exports = {
     pass: process.env.SMTP_PASS,
     sender: process.env.SMTP_SENDER_EMAIL
   },
-  webLink: 'http://testspace.tech/btech',
+  webLink: process.env.WEB_LINK || 'http://localhost:4200',
   otpLength: 40,
   version: 'v1',
   allowedImagesTypes: ['image/jpg', 'image/jpeg', 'image/png'],

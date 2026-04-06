@@ -8,7 +8,7 @@ module.exports = {
   port: 6600,
   isTesting: false,
   isProduction: false,
-  webLink: 'http://btech.testspace.tech',
+  webLink: process.env.WEB_LINK || 'http://localhost:4200',
   swaggerHost: process.env.API_URL,
   emailConfig: {
     host: process.env.SMTP_HOST,

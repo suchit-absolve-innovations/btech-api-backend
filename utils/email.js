@@ -9,16 +9,22 @@ const emailConfig = config.get('emailConfig');
 const isEmailConfigured = () =>
   Boolean(emailConfig.host && emailConfig.port && emailConfig.user && emailConfig.pass && emailConfig.sender);
 
-const createTransporter = () =>
-  nodemailer.createTransport({
+const createTransporter = () => {
+  const smtpPort = Number(emailConfig.port || 587);
+  const secure = smtpPort === 465;
+
+  return nodemailer.createTransport({
     host: emailConfig.host,
-    port: emailConfig.port,
+    port: smtpPort,
+    secure,
+    requireTLS: !secure,
     auth: {
       user: emailConfig.user,
       pass: emailConfig.pass
     },
     tls: { rejectUnauthorized: false }
   });
+};
 
 const sendMail = options =>
   new Promise((resolve, reject) => {
@@ -112,7 +118,7 @@ module.exports = {
         },
         'en',
         (error, result) => {
-          if (error) return log.error(error);
+          if (error) return reject(error);
           const options = {
             to: member.email,
             from: config.get('emailConfig').sender,

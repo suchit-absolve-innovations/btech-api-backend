@@ -5,6 +5,8 @@ module.exports = () => {
   const connectTimeout = Number(process.env.DB_CONNECT_TIMEOUT || 60000);
   const useSsl = parseBoolean(process.env.DB_SSL || false);
   const rejectUnauthorized = parseBoolean(process.env.DB_SSL_REJECT_UNAUTHORIZED || false);
+  const dbUsername = process.env.DB_USERNAME || process.env.DB_USER;
+  const dbPassword = process.env.DB_PASSWORD;
 
   const dialectOptions = {
     decimalNumbers: true,
@@ -36,15 +38,15 @@ module.exports = () => {
         {
           host: process.env.DB_HOST,
           port,
-          username: process.env.DB_USERNAME,
-          password: process.env.DB_PASSWORD
+          username: dbUsername,
+          password: dbPassword
         }
       ],
       write: {
         host: process.env.DB_HOST,
         port,
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD
+        username: dbUsername,
+        password: dbPassword
       }
     },
     logging: false
